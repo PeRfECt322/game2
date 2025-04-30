@@ -1,0 +1,38 @@
+<resources>
+    <string name="app_name">game2</string>
+    <!-- Слова для игры -->
+    <string-array name="game_words">
+        <item>программирование</item>
+        <item>компьютер</item>
+        <item>смартфон</item>
+        <item>алгоритм</item>
+        <item>база данных</item>
+        <item>интерфейс</item>
+        <item>разработка</item>
+        <item>приложение</item>
+        <item>функция</item>
+    </string-array>
+
+    <!-- Тексты интерфейса -->
+    <string name="game_title">Игра Виселица</string>
+    <string name="word_length">Длина слова: %d</string>
+    <string name="attempts_left">Осталось попыток: %d</string>
+    <string name="used_letters">Использованные буквы: %s</string>
+    <string name="enter_letter">Введите букву:</string>
+    <string name="win_message">Поздравляем! Вы выиграли!</string>
+    <string name="lose_message">Вы проиграли! Слово было: %s</string>
+    <string name="letter_hint">Буква</string>
+    <string name="guess_button">Угадать</string>
+    <string name="restart_button">Новая игра</string>
+
+    <string-array name="status_messages">
+        <item>Попробуйте угадать букву</item>
+        <item>Ошиблись один раз</item>
+        <item>Ошиблись два раза</item>
+        <item>Ошиблись три раза</item>
+        <item>Ошиблись четыре раза</item>
+        <item>Ошиблись пять раз</item>
+        <item>Вы проиграли!</item>
+    </string-array>
+
+</resources>
