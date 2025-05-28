@@ -1,11 +1,12 @@
 package com.example.game2
+
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.widget.Button
-import android.widget.EditText
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
     private lateinit var wordDisplayTextView: TextView
@@ -16,6 +17,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var letterEditText: EditText
     private lateinit var guessButton: Button
     private lateinit var restartButton: Button
+    private lateinit var database: GameDatabase
 
     private var selectedWord = ""
     private var guessedLetters = mutableSetOf<Char>()
@@ -42,7 +44,13 @@ class MainActivity : AppCompatActivity() {
         guessButton.text = getString(R.string.guess_button)
         restartButton.text = getString(R.string.restart_button)
 
+        database = GameDatabase.getDatabase(this)
+
         startNewGame()
+
+        findViewById<Button>(R.id.historyButton).setOnClickListener {
+            startActivity(Intent(this, HistoryActivity::class.java))
+        }
 
         guessButton.setOnClickListener {
             guessLetter()
@@ -54,13 +62,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun startNewGame() {
-        // Получаем слова из ресурсов
         val words = resources.getStringArray(R.array.game_words)
         selectedWord = words.random().toLowerCase()
         guessedLetters.clear()
         incorrectGuesses = 0
 
-        // Обновляем UI
         wordLengthTextView.text = getString(R.string.word_length, selectedWord.length)
         updateWordDisplay()
         attemptsLeftTextView.text = getString(R.string.attempts_left, maxAttempts - incorrectGuesses)
@@ -97,11 +103,9 @@ class MainActivity : AppCompatActivity() {
         updateUsedLetters()
 
         if (letter in selectedWord) {
-            // Правильная буква
             updateWordDisplay()
             checkWin()
         } else {
-            // Неправильная буква
             incorrectGuesses++
             attemptsLeftTextView.text = getString(R.string.attempts_left, maxAttempts - incorrectGuesses)
             updateStatus()
@@ -143,6 +147,13 @@ class MainActivity : AppCompatActivity() {
             statusTextView.text = getString(R.string.win_message)
             guessButton.isEnabled = false
             restartButton.visibility = View.VISIBLE
+
+            // Запись в базу данных
+            lifecycleScope.launch {
+                database.gameResultDao().insert(
+                    GameResult(word = selectedWord, result = "Победа", date = System.currentTimeMillis())
+                )
+            }
         }
     }
 
@@ -152,6 +163,13 @@ class MainActivity : AppCompatActivity() {
             wordDisplayTextView.text = selectedWord
             guessButton.isEnabled = false
             restartButton.visibility = View.VISIBLE
+
+            // Запись в базу данных
+            lifecycleScope.launch {
+                database.gameResultDao().insert(
+                    GameResult(word = selectedWord, result = "Поражение", date = System.currentTimeMillis())
+                )
+            }
         }
     }
 }
